@@ -76,7 +76,7 @@ typings/
 .fusebox/
 
 # excel
-.xlsx
+*.xlsx
 
 # pdf
-.pdf
+*.pdf
