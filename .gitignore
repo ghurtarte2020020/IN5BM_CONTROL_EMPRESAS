@@ -5,6 +5,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Ignore All (xlsx) files
+*.xlsx
+
+# pdf
+*.pdf
+
 # Runtime data
 pids
 *.pid
@@ -75,8 +81,3 @@ typings/
 # FuseBox cache
 .fusebox/
 
-# excel
-*.xlsx
-
-# pdf
-*.pdf
