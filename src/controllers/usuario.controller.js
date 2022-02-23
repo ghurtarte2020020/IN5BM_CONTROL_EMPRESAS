@@ -99,6 +99,8 @@ function RegistrarEmpresa(req, res) {
 function EditarEmpresa(req, res) {
     var parametros = req.body;    
 
+    let idEmpresa
+
     if(req.user.rol == 'Empresa'){
         idEmpresa = req.user.sub
     }else if(req.user.rol == 'Admin'){
@@ -108,7 +110,7 @@ function EditarEmpresa(req, res) {
                     .send({ mensaje: 'debe enviar el id de la empresa' });
         }
         
-        var idEmpresa = req.params.idEmpresa;
+     idEmpresa = req.params.idEmpresa;
     }
 
     if(parametros.rol){
@@ -126,9 +128,36 @@ function EditarEmpresa(req, res) {
         })
 }
 
+function EliminarEmpresa(req, res){
+    let idEmpresa
+
+    if(req.user.rol == 'Empresa'){
+        idEmpresa = req.user.sub
+    }else if(req.user.rol == 'Admin'){
+
+        if(req.params.idEmpresa==null){
+            return res.status(500)
+                    .send({ mensaje: 'debe enviar el id de la empresa' });
+        }
+        
+     idEmpresa = req.params.idEmpresa;
+    }
+
+    Usuario.findByIdAndDelete(idEmpresa,
+        (err, usuarioActualizado)=>{
+            if(err) return res.status(500)
+                .send({ mensaje: 'Error en la peticion' });
+            if(!usuarioActualizado) return res.status(500)
+                .send({ mensaje: 'Error al editar el Usuario'});
+            return res.status(200).send({usuario : usuarioActualizado})
+        })
+
+}
+
 module.exports = {
     UsuarioInicial,
     Login,
     RegistrarEmpresa,
-    EditarEmpresa
+    EditarEmpresa,
+    EliminarEmpresa
 }

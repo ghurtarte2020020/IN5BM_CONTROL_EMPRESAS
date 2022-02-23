@@ -55,7 +55,8 @@ function MisEmpleados(req, res) {
     Empleado.find({idEmpresa: usuarioLogueado}, (err, empleadoEncontrado) => {
         if(err) return res.status(500)
         .send({ mensaje: 'Error en la peticion' });
-    if(!empleadoEncontrado) return res.status(500)
+
+    if(empleadoEncontrado.length==0) return res.status(500)
         .send({ mensaje: 'Error, no cuenta con empleados'});
 
         let nombreEmpresa = empleadoEncontrado[0].idEmpresa.nombreEmpresa
@@ -65,6 +66,7 @@ function MisEmpleados(req, res) {
         CrearPdf(nombreEmpresa, empleadoEncontrado)
     
     return res.status(200).send({'cantidad de empleados' : empleadoEncontrado.length, empleados : empleadoEncontrado});
+
     }).populate('idEmpresa', 'nombreEmpresa')
 }
 
@@ -86,7 +88,8 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
     let content = [{
         text:  'Empleados de '+nombreEmpresa,
         alignment: 'center',
-        fontSize: 25
+        fontSize: 25,
+        color: '#094099'
     }]
 
     for (let i = 0; i < arrayEmpleados.length ; i++) {
@@ -150,7 +153,7 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
             dataMax = columnLength;
             }
             })
-            column.width = dataMax <= 10 ? 25 : dataMax;
+            column.width = dataMax <= 10 ? 25 : dataMax;    
         })
 
         sheet.getRow(1).font = {

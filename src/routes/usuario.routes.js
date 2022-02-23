@@ -7,5 +7,6 @@ var api = express.Router();
 api.post('/login', usuarioControlador.Login);
 api.post('/registrarEmpresa', md_autenticacion.Auth, usuarioControlador.RegistrarEmpresa);
 api.put('/editarEmpresa/:idEmpresa?', md_autenticacion.Auth, usuarioControlador.EditarEmpresa);
+api.delete('/eliminarEmpresa/:idEmpresa?', md_autenticacion.Auth, usuarioControlador.EliminarEmpresa)
 
 module.exports = api;
