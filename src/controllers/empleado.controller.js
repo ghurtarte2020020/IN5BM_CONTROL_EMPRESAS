@@ -171,9 +171,137 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
         sheet.workbook.xlsx.writeFile('./src/exceles/empleados-de-'+nombreEmpresa.toLowerCase()+'-excel.xlsx')
     }
 
+function BuscarPorId(req, res){
+    var usuarioLogueado
+    var idEmp = req.params.idEmpleado
+
+    if(!idEmp) return res.status(500).send({ mensaje: "debe colocar el id de un empleado" });
+
+    if(req.user.rol == 'Empresa'){
+        usuarioLogueado = req.user.sub
+    }else if(req.user.rol == 'Admin'){
+
+        if(req.params.idEmpresa==null){
+            return res.status(500)
+                    .send({ mensaje: 'debe enviar el id de la empresa' });
+        }else{
+            usuarioLogueado = req.params.idEmpresa
+        }
+    }
+
+    Empleado.findById(idEmp, (err, empleadoEncontrado) =>{
+        if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
+
+        if(empleadoEncontrado==0) return res.status(404).send({ mensaje: "Error, no existe el empleado" });
+
+        if(empleadoEncontrado.idEmpresa==null){
+            return res.status(404).send({ mensaje: "Error, el empleado no pertenece a la empresa"});
+        }
+
+        if(empleadoEncontrado.idEmpresa._id == usuarioLogueado){ 
+            return res.status(200).send({ empleado: empleadoEncontrado});
+        }
+    }).populate('idEmpresa', 'nombreEmpresa')
+}
+
+function BuscarPorNombre(req, res){
+    var usuarioLogueado
+    var nombreEmp = req.params.nombreEmpleado
+
+    if(!nombreEmp) return res.status(500).send({ mensaje: "debe colocar el nombre de un empleado" });
+
+    if(req.user.rol == 'Empresa'){
+        usuarioLogueado = req.user.sub
+    }else if(req.user.rol == 'Admin'){
+
+        if(req.params.idEmpresa==null){
+            return res.status(500)
+                    .send({ mensaje: 'debe enviar el id de la empresa' });
+        }else{
+            usuarioLogueado = req.params.idEmpresa
+        }
+    }
+
     
+    Empleado.find({idEmpresa: usuarioLogueado, nombre:{ $regex: nombreEmp, $options: 'i' } }, (err, empleadoEncontrado) => {
+        if(err) return res.status(500)
+        .send({ mensaje: 'Error en la peticion' });
+
+    if(empleadoEncontrado.length==0) return res.status(500)
+        .send({ mensaje: 'Error, no cuenta con empleados llamados '+nombreEmp});
+    
+    return res.status(200).send({empleado : empleadoEncontrado});
+
+    }).populate('idEmpresa', 'nombreEmpresa')
+}
+
+function BuscarPorPuesto(req, res){
+    var usuarioLogueado
+    var puestoEmp = req.params.puestoEmpleado
+
+    if(!puestoEmp) return res.status(500).send({ mensaje: "debe colocar el puesto de un empleado" });
+
+    if(req.user.rol == 'Empresa'){
+        usuarioLogueado = req.user.sub
+    }else if(req.user.rol == 'Admin'){
+
+        if(req.params.idEmpresa==null){
+            return res.status(500)
+                    .send({ mensaje: 'debe enviar el id de la empresa' });
+        }else{
+            usuarioLogueado = req.params.idEmpresa
+        }
+    }
+
+    
+    Empleado.find({idEmpresa: usuarioLogueado, puesto:{ $regex: puestoEmp, $options: 'i' } }, (err, empleadoEncontrado) => {
+        if(err) return res.status(500)
+        .send({ mensaje: 'Error en la peticion' });
+
+    if(empleadoEncontrado.length==0) return res.status(500)
+        .send({ mensaje: 'Error, no cuenta con empleados con el puesto '+puestoEmp});
+    
+    return res.status(200).send({empleado : empleadoEncontrado});
+
+    }).populate('idEmpresa', 'nombreEmpresa')
+}
+
+function BuscarPorDepartamento(req, res){
+    var usuarioLogueado
+    var depEmp = req.params.departamentoEmpleado
+
+    if(!depEmp) return res.status(500).send({ mensaje: "debe colocar el departamento de un empleado" });
+
+    if(req.user.rol == 'Empresa'){
+        usuarioLogueado = req.user.sub
+    }else if(req.user.rol == 'Admin'){
+
+        if(req.params.idEmpresa==null){
+            return res.status(500)
+                    .send({ mensaje: 'debe enviar el id de la empresa' });
+        }else{
+            usuarioLogueado = req.params.idEmpresa
+        }
+    }
+
+    
+    Empleado.find({idEmpresa: usuarioLogueado, departamento:{ $regex: depEmp, $options: 'i' } }, (err, empleadoEncontrado) => {
+        if(err) return res.status(500)
+        .send({ mensaje: 'Error en la peticion' });
+
+    if(empleadoEncontrado.length==0) return res.status(500)
+        .send({ mensaje: 'Error, no cuenta con empleados en el departamento '+depEmp});
+    
+    return res.status(200).send({empleado : empleadoEncontrado});
+
+    }).populate('idEmpresa', 'nombreEmpresa')
+}
 
 module.exports = {
     RegistrarEmpleado,
-    MisEmpleados
+    MisEmpleados,
+    BuscarPorId,
+    BuscarPorNombre,
+    BuscarPorPuesto,
+    BuscarPorDepartamento
 }
