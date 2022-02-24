@@ -10,5 +10,8 @@ api.get('/empleadoPorId/:idEmpleado/:idEmpresa?', md_autenticacion.Auth, emplead
 api.get('/empleadoPorNombre/:nombreEmpleado/:idEmpresa?', md_autenticacion.Auth, empleadoController.BuscarPorNombre);
 api.get('/empleadoPorPuesto/:puestoEmpleado/:idEmpresa?', md_autenticacion.Auth, empleadoController.BuscarPorPuesto);
 api.get('/empleadoPorDepartamento/:departamentoEmpleado/:idEmpresa?', md_autenticacion.Auth, empleadoController.BuscarPorDepartamento);
+api.delete('/eliminarEmpleado/:idEmpleado/:idEmpresa?', md_autenticacion.Auth, empleadoController.EliminarEmpleado);
+api.put('/editarEmpleado/:idEmpleado/:idEmpresa?', md_autenticacion.Auth, empleadoController.EditarEmpleado);
+
 
 module.exports = api;

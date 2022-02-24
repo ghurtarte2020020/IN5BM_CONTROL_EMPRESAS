@@ -297,11 +297,73 @@ function BuscarPorDepartamento(req, res){
     }).populate('idEmpresa', 'nombreEmpresa')
 }
 
+    function EliminarEmpleado(req,res){
+        var usuarioLogueado
+
+        var idEmp = req.params.idEmpleado
+
+        if(!idEmp) return res.status(500).send({ mensaje: "debe colocar el id de un empleado" });
+
+        if(req.user.rol == 'Empresa'){
+            usuarioLogueado = req.user.sub
+        }else if(req.user.rol == 'Admin'){
+    
+            if(req.params.idEmpresa==null){
+                return res.status(500)
+                        .send({ mensaje: 'debe enviar el id de la empresa' });
+            }else{
+                usuarioLogueado = req.params.idEmpresa
+            }
+        }
+
+        Empleado.findOneAndDelete({idEmpresa: usuarioLogueado, _id: idEmp}, (err, empleadoElimindo)=>{
+            if(err) return res.status(500).send({mensaje: "Error al eliminar el empleado"}) 
+        
+            if(!empleadoElimindo) return res.status(500).send({mensaje: "No se encontró el empleado"})
+    
+            return res.status(200).send({mensaje: empleadoElimindo})
+        })
+    }
+
+    
+    function EditarEmpleado(req,res){
+        var usuarioLogueado
+
+        var parametros = req.body;   
+
+        var idEmp = req.params.idEmpleado
+
+        if(!idEmp) return res.status(500).send({ mensaje: "debe colocar el id de un empleado" });
+
+        if(req.user.rol == 'Empresa'){
+            usuarioLogueado = req.user.sub
+        }else if(req.user.rol == 'Admin'){
+    
+            if(req.params.idEmpresa==null){
+                return res.status(500)
+                        .send({ mensaje: 'debe enviar el id de la empresa' });
+            }else{
+                usuarioLogueado = req.params.idEmpresa
+            }
+        }
+
+        Empleado.findOneAndUpdate({idEmpresa: usuarioLogueado, _id: idEmp}, parametros, {new: true}, (err, empleadoEditado)=>{
+            if(err) return res.status(500).send({mensaje: "Error al editar el empleado"}) 
+        
+            if(!empleadoEditado) return res.status(500).send({mensaje: "No se encontró el empleado"})
+    
+            return res.status(200).send({mensaje: empleadoEditado})
+        })
+    }
+
+
 module.exports = {
     RegistrarEmpleado,
     MisEmpleados,
     BuscarPorId,
     BuscarPorNombre,
     BuscarPorPuesto,
-    BuscarPorDepartamento
+    BuscarPorDepartamento,
+    EliminarEmpleado,
+    EditarEmpleado
 }
