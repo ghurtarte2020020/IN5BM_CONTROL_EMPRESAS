@@ -89,13 +89,16 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
         text:  'Empleados de '+nombreEmpresa,
         alignment: 'center',
         fontSize: 25,
-        color: '#094099'
+        color: '#094099',
+        bold: true, 
+        margin: [0, 0, 0, 20]
     }]
 
     for (let i = 0; i < arrayEmpleados.length ; i++) {
 
         content.push({
-            text: ' '
+            text: ' ',
+            margin: [0, 0, 0, 10]
         })
         content.push({
             text:  i+1+')Empleado: '+arrayEmpleados[i].nombre+' '+arrayEmpleados[i].apellido,
@@ -109,13 +112,41 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
 
         content.push({
             text: 'Departamento: '+arrayEmpleados[i].departamento,
-            fontSize: 15
+            fontSize: 15, 
+            margin: [0, 0, 0, 10]
         })
     }
-    let docDefination = {
+
+    content.push({
+        margin: [0, 10, 0, 0],
+        text: 'Cantidad de Empleados: '+arrayEmpleados.length,
+        fontSize: 15, 
+    })
+
+    let documento = {
+        pageSize: {
+            width: 595.28,
+            height: 841.89  
+          },
+          background: function () {
+              return {
+                  canvas: [
+                    {
+                        type: 'rect',
+                        x: 0, y: 0, w: 595.28, h: 30,
+                        color: '#8a867d',
+                    },
+                      {
+                          type: 'rect',
+                          x: 0, y: 20, w: 595.28, h: 70.89,
+                          color: '#ada399'
+                      },
+                  ]
+              };
+          },
         content: content
     }
-    let pdfDoc = pdfmake.createPdfKitDocument(docDefination, {});
+    let pdfDoc = pdfmake.createPdfKitDocument(documento, {});
     pdfDoc.pipe(fs.createWriteStream('./src/pdfs/empleados-de-'+nombreEmpresa.toLowerCase() +'.pdf'));
     pdfDoc.end();
 
@@ -144,16 +175,30 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
             })
         }
 
+        sheet.addRow({
+            nombre: ' ',
+            apellido: ' ',
+            puesto: ' ',
+            departamento: ' '
+        })
+
+        sheet.addRow({
+            nombre: 'Cantidad de Empleados:',
+            apellido: arrayEmpleados.length,
+            puesto: ' ',
+            departamento: ' '
+        })
+
         sheet.columns.forEach(column => {
 
-            var dataMax = 0;
+            var Acumulado = 0;
             column.eachCell({ includeEmpty: true }, function(cell){
             var columnLength = cell.value.length;
-            if (columnLength > dataMax) {
-            dataMax = columnLength;
+            if (columnLength > Acumulado) {
+                Acumulado = columnLength;
             }
             })
-            column.width = dataMax <= 10 ? 25 : dataMax;    
+            column.width = Acumulado <= 10 ? 25 : Acumulado;    
         })
 
         sheet.getRow(1).font = {
