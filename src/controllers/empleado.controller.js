@@ -121,6 +121,8 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
         margin: [0, 10, 0, 0],
         text: 'Cantidad de Empleados: '+arrayEmpleados.length,
         fontSize: 15, 
+        color: '#094099',
+        bold: true
     })
 
     let documento = {
@@ -140,7 +142,7 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
                           type: 'rect',
                           x: 0, y: 20, w: 595.28, h: 70.89,
                           color: '#ada399'
-                      },
+                      }
                   ]
               };
           },
