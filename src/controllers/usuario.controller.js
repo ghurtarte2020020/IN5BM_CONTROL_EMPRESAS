@@ -109,6 +109,11 @@ function EditarEmpresa(req, res) {
             return res.status(500)
                     .send({ mensaje: 'debe enviar el id de la empresa' });
         }
+
+        if(req.params.idEmpresa == req.user.sub){
+            return res.status(500)
+                    .send({ mensaje: 'error, no puede editar el admin' });
+        }
         
      idEmpresa = req.params.idEmpresa;
     }
@@ -140,6 +145,11 @@ function EliminarEmpresa(req, res){
                     .send({ mensaje: 'debe enviar el id de la empresa' });
         }
         
+        if(req.params.idEmpresa == req.user.sub){
+            return res.status(500)
+                    .send({ mensaje: 'error, no puede eliminar el admin' });
+        }
+
      idEmpresa = req.params.idEmpresa;
     }
 

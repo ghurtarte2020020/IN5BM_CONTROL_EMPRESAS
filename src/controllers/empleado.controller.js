@@ -1,5 +1,6 @@
 const Empleado = require('../models/empleado.model');
 
+
 function RegistrarEmpleado(req, res) {
     let empresaId 
 
@@ -72,8 +73,11 @@ function MisEmpleados(req, res) {
 
 function CrearPdf(nombreEmpresa, arrayEmpleados) {
     const fs = require('fs');
-
+    const path = require('path');
     const Pdfmake = require('pdfmake');
+
+
+
 
     var fonts = {
         Roboto: {
