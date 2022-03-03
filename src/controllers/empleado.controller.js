@@ -73,11 +73,12 @@ function MisEmpleados(req, res) {
 
 function CrearPdf(nombreEmpresa, arrayEmpleados) {
     const fs = require('fs');
-    const path = require('path');
     const Pdfmake = require('pdfmake');
+    const path = require('path');
 
-
-
+    fs.mkdir('./src/pdfs', { recursive: true }, (err) => {
+        if (err) throw err;
+    });
 
     var fonts = {
         Roboto: {
@@ -162,6 +163,14 @@ function CrearPdf(nombreEmpresa, arrayEmpleados) {
         const ExcelJS = require('exceljs')
 
         const workbook = new ExcelJS.Workbook()
+
+        const fs = require('fs');
+
+        const path = require('path');
+
+        fs.mkdir('./src/exceles', { recursive: true }, (err) => {
+            if (err) throw err;
+        });
 
         const sheet = workbook.addWorksheet('empleados')
 
