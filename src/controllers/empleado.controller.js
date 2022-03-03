@@ -252,14 +252,12 @@ function BuscarPorId(req, res){
     Empleado.findById(idEmp, (err, empleadoEncontrado) =>{
         if(err) return res.status(500).send({ mensaje: "Error en la peticion" });
 
-        if(empleadoEncontrado==0) return res.status(404).send({ mensaje: "Error, no existe el empleado" });
-
-        if(empleadoEncontrado.idEmpresa==null){
-            return res.status(404).send({ mensaje: "Error, el empleado no pertenece a la empresa"});
-        }
+        if(!empleadoEncontrado || empleadoEncontrado.length == 0 || empleadoEncontrado == null || empleadoEncontrado.idEmpresa==null) return res.status(404).send({ mensaje: "Error, no existe el empleado" });
 
         if(empleadoEncontrado.idEmpresa._id == usuarioLogueado){ 
             return res.status(200).send({ empleado: empleadoEncontrado});
+        }else{
+            return res.status(404).send({ mensaje: "Error, el empleado no pertenece a la empresa"});
         }
     }).populate('idEmpresa', 'nombreEmpresa')
 }
